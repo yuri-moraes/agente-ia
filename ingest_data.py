@@ -11,11 +11,10 @@ load_dotenv()
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY") 
-PINECONE_ENVIRONMENT = os.getenv("PINECONE_ENVIRONMENT")
 PINECONE_CLOUD = "aws"
 PINECONE_REGION = "us-east-1"
 
-if not OPENAI_API_KEY or not PINECONE_API_KEY or not PINECONE_ENVIRONMENT:
+if not OPENAI_API_KEY or not PINECONE_API_KEY:
     raise ValueError("Configure corretamente suas variáveis de ambiente")
 
 pc = Pinecone(api_key=PINECONE_API_KEY) 

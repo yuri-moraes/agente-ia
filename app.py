@@ -36,3 +36,4 @@ secret_key = SecretStr(OPENAI_API_KEY) if OPENAI_API_KEY else None
 embeddings_model = OpenAIEmbeddings(api_key=secret_key, model="text-embedding-ada-002")
 
 llm = ChatOpenAI(api_key=secret_key, model="gpt-4o")
+
