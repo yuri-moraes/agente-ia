@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from pypdf import PdfReader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings
-from pinecone import Pinecone, PodSpec
+from pinecone import Pinecone, ServerlessSpec
 from pinecone.exceptions import NotFoundException
 from pydantic import SecretStr 
 
@@ -11,7 +11,9 @@ load_dotenv()
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY") 
-PINECONE_ENVIRONMENT = os.getenv("PINECONE_ENVIRONMENT") 
+PINECONE_ENVIRONMENT = os.getenv("PINECONE_ENVIRONMENT")
+PINECONE_CLOUD = "aws"
+PINECONE_REGION = "us-east-1"
 
 if not OPENAI_API_KEY or not PINECONE_API_KEY or not PINECONE_ENVIRONMENT:
     raise ValueError("Configure corretamente suas variáveis de ambiente")
@@ -30,7 +32,10 @@ except NotFoundException:
         name=INDEX_NAME,
         dimension=EMBEDDING_DIMENSION,
         metric='cosine',
-        spec=PodSpec(environment=PINECONE_ENVIRONMENT) 
+        spec=ServerlessSpec(
+            cloud=PINECONE_CLOUD, # Ex: "aws"
+            region=PINECONE_REGION  # Ex: "us-east-1"
+        )
     )
     print(f"Índice '{INDEX_NAME}' criado com sucesso.")
 
