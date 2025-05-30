@@ -33,8 +33,8 @@ except NotFoundException:
         dimension=EMBEDDING_DIMENSION,
         metric='cosine',
         spec=ServerlessSpec(
-            cloud=PINECONE_CLOUD, # Ex: "aws"
-            region=PINECONE_REGION  # Ex: "us-east-1"
+            cloud=PINECONE_CLOUD,
+            region=PINECONE_REGION
         )
     )
     print(f"Índice '{INDEX_NAME}' criado com sucesso.")
