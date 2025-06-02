@@ -37,3 +37,38 @@ embeddings_model = OpenAIEmbeddings(api_key=secret_key, model="text-embedding-ad
 
 llm = ChatOpenAI(api_key=secret_key, model="gpt-4o")
 
+app = FastAPI()
+
+class ChatRequest(BaseModel):
+    query:str
+
+def retrieve_documents(query: str) -> str:
+    """
+    Gera a incorporação (embedding) da query e busca documentos relevantes no Pinecone.
+    Retorna os textos dos documentos concatenados.
+    """
+
+    query_embedding = embeddings_model.embed_query(query)
+
+    results = index.query(
+        vector=query_embedding,
+        top_k=3,
+        include_metadata=True
+    )
+    context_texts = [match.metadata['text'] for match in results.matches]
+    return "\n\n".join(context_texts)
+
+prompt_template = ChatPromptTemplate.from_messages(
+    [
+        ("system", "Você é um assistente prestativo para o SmartDevice X1. Use as seguintes informações de contexto para responder às perguntas do usuário. Se a pergunta não puder ser respondida com base no contexto fornecido, diga 'Desculpe, não consigo encontrar essa informação no manual do SmartDevice X1.' Não invente respostas. Contexto: {context}"),
+        ("user", "{query}"),
+    ]
+)
+
+# retrieve_documents -> prompt_template -> llm -> output_parser
+rag_chain = (
+    {"context": retrieve_documents, "query": RunnablePassthrough()}
+    | prompt_template
+    | llm
+    | StrOutputParser()
+)
