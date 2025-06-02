@@ -4,12 +4,14 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from pinecone import Pinecone
+from pinecone.db_data.models import QueryResponse, ScoredVector
 from pinecone.exceptions import NotFoundException
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
-from typing import List, Dict
+from typing import List, Dict, Any, cast
 from pydantic import SecretStr 
+import traceback
 
 load_dotenv()
 
@@ -39,9 +41,6 @@ llm = ChatOpenAI(api_key=secret_key, model="gpt-4o")
 
 app = FastAPI()
 
-class ChatRequest(BaseModel):
-    query:str
-
 def retrieve_documents(query: str) -> str:
     """
     Gera a incorporação (embedding) da query e busca documentos relevantes no Pinecone.
@@ -50,12 +49,36 @@ def retrieve_documents(query: str) -> str:
 
     query_embedding = embeddings_model.embed_query(query)
 
-    results = index.query(
+    query_return_value = index.query(
         vector=query_embedding,
         top_k=3,
         include_metadata=True
     )
-    context_texts = [match.metadata['text'] for match in results.matches]
+
+    context_texts: List[str] = []
+
+    if isinstance(query_return_value, QueryResponse):
+        results: QueryResponse = query_return_value
+
+        try:
+            typed_matches = cast(List[ScoredVector], results.matches)
+
+            if typed_matches:
+                for match in typed_matches:
+                    current_match_metadata = match.metadata 
+
+                    if current_match_metadata and isinstance(current_match_metadata, dict) and 'text' in current_match_metadata:
+                        text_content = current_match_metadata.get('text')
+                        if isinstance(text_content, str):
+                            context_texts.append(text_content)
+        except AttributeError as e_attr:
+            print(f"Alerta: Erro de atributo ao acessar 'results.matches' ou 'match.metadata'. Detalhes: {e_attr}")
+        except Exception as e_process:
+            print(f"Alerta: Erro inesperado ao processar os matches: {e_process}")
+
+    else:
+        print(f"Alerta: index.query() retornou um tipo inesperado: {type(query_return_value)}. Conteúdo: {query_return_value}")
+
     return "\n\n".join(context_texts)
 
 prompt_template = ChatPromptTemplate.from_messages(
@@ -72,3 +95,28 @@ rag_chain = (
     | llm
     | StrOutputParser()
 )
+class ChatRequest(BaseModel):
+    query:str
+
+@app.post("/chat")
+async def chat_with_agente(request: ChatRequest):
+    """
+    Endpoint para conversar com o agente de IA.
+    Recebe uma pergunta e retorna a resposta gerada.
+    """
+    try:
+        response = rag_chain.invoke(request.query)
+        return {"answer": response}
+    except Exception as e:
+        print(f"Erro ao processar a requisição: {e}\n{traceback.format_exc()}")
+        raise HTTPException(status_code=500, detail=f"Erro interno no servidor: {str(e)}")
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(
+        "app:app",
+        host="0.0.0.0",
+        port=8000,
+        reload=True,
+        log_level="info"
+    )
