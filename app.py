@@ -12,6 +12,7 @@ from langchain_core.runnables import RunnablePassthrough
 from typing import List, cast
 from pydantic import SecretStr 
 import traceback
+from fastapi.middleware.cors import CORSMiddleware
 
 load_dotenv()
 
@@ -40,6 +41,20 @@ embeddings_model = OpenAIEmbeddings(api_key=secret_key, model="text-embedding-ad
 llm = ChatOpenAI(api_key=secret_key, model="gpt-4o")
 
 app = FastAPI()
+
+origins = [
+    "http://localhost",
+    "http://localhost:8000",
+    "http://127.0.0.1:5500",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True, 
+    allow_methods=["*"], 
+    allow_headers=["*"],
+)
 
 def retrieve_documents(query: str) -> str:
     """
