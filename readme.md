@@ -137,9 +137,9 @@ O backend é a API que seu frontend irá consultar para interagir com o agente d
     ```
 ##### Ou use:
     
-    ```bash
-      uvicorn app:app --reload --host 0.0.0.0 --port 8000
-    ```
+```bash
+  uvicorn app:app --reload --host 0.0.0.0 --port 8000
+```
 
   * O servidor estará disponível em `http://localhost:8000`.
   * Você pode acessar a documentação interativa da API em `http://localhost:8000/docs`. Mantenha este terminal aberto enquanto estiver usando o frontend.
