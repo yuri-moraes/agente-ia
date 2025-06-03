@@ -28,15 +28,15 @@ O diagrama abaixo mostra o fluxo de dados da aplicação:
 
 ```mermaid
 graph TD
-    A[Usuário] --> B(Frontend - index.html, script.js);
-    B -- Pergunta do Usuário (HTTP POST /chat) --> C(Backend - FastAPI app.py);
-    C -- 1. Gerar Embedding da Pergunta --> D(OpenAI API - Embeddings);
-    D -- Embedding da Pergunta --> C;
-    C -- 2. Buscar Documentos Relevantes (Query por similaridade) --> E(Pinecone - Índice smartdevice-manual);
-    E -- Chunks de Contexto Relevantes --> C;
-    C -- 3. Gerar Resposta (Pergunta + Contexto) --> F(OpenAI API - GPT-4o);
-    F -- Resposta Gerada --> C;
-    C -- Resposta do Agente (HTTP 200 OK) --> B;
+    A[Usuário] --> B("Frontend - index.html, script.js");
+    B --"Pergunta do Usuário (HTTP POST /chat)"--> C("Backend - FastAPI app.py");
+    C --"1.Gerar Embedding da Pergunta"--> D("OpenAI API - Embeddings");
+    D --"Embedding da Pergunta"--> C;
+    C --"2.Buscar Documentos Relevantes (Query por similaridade)"--> E("Pinecone - Índice smartdevice-manual");
+    E --"Chunks de Contexto Relevantes"--> C;
+    C --"3.Gerar Resposta (Pergunta + Contexto)"--> F("OpenAI API - GPT-4o");
+    F --"Resposta Gerada"--> C;
+    C --"Resposta do Agente (HTTP 200 OK)"--> B;
     B --> A;
 ```
 
