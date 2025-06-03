@@ -171,14 +171,19 @@ agente-ia-web/
 
 Como o projeto é apenas para aprendizagem (por enquanto), é importante deixar esse projeto online para qque qualquer um possa testar. Porém alguém má intencionado pode gastar tokens excessivamente e gastar todo meu budget. Então para que isso não interfira no objetivo de colocar o projeto no ar, precisa de algumas melhorias.
 
-- Limite de uso
-- Endpoints para testar o estado atual da API
-- Respostas "boleanas" dependendo da pergunta do usuário
-- Incluir respostas específicas dependendo da pergunta do usuário
+1. Autenticação e Segurança
+2. Gerenciamento de histórico de conversas (Memória)
+3. Tratamento de dados mais sofisticado
+4. Filtragem de busca no Pinecone (Metadata Filtering)
+5. Avaliação da qualidade das respostas
+6. Streaming de respostas
+7. Interface de usuário (Frontend) mais Avançada
 
-### Exemplo:
-
-#### User: Qual o valor de produto x? 
-#### System: O valor do produto depende de modelo, qual modelo se refere?
-
-Com base na resposta do usuário, deve-se responder. Mas isto talvez seja uma melhoria desnecessária. Se o modelo da OpenAI já fizer isso, se torna desnecessário.
+## Problemas
+1. Atualmente, o agente não se lembra das conversas anteriores. Cada pergunta é tratada de forma isolada.
+2. O PdfReader e RecursiveCharacterTextSplitter são básicos. PDFs podem ter tabelas, imagens, layouts complexos.
+3. Atualmente, a busca retorna chunks de todo o documento. Se eu tivesse vários manuais (por exemplo, "SmartDevice X1", "SmartDevice Y2"), eu gostaria de perguntar sobre o "SmartDevice X1" e obter respostas apenas do manual X1.
+4. Como eu sei se o agente está respondendo bem?    
+5. A resposta do LLM pode demorar um pouco para vir completa, fazendo a interface parecer travada.
+6. A UI atual é básica.
+7. Qualquer um pode acessar a API.
