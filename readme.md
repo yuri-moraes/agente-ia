@@ -36,13 +36,13 @@ graph TD
     A[Usuário] --> B("Frontend - index.html, script.js");
     B --"Pergunta + SessionID (HTTP POST /chat/)"--> C("Backend - API (main.py + api/chat.py)");
     C --"Chama o Agente LangGraph"--> G{LangGraph Workflow};
-    G --"1. Recupera o estado da conversa"--> H[("MemorySaver")];
-    G --"2. Gera Embedding da Pergunta"--> D("OpenAI API - Embeddings");
-    G --"3. Busca Documentos (Query)"--> E("Pinecone - Índice Vetorial");
+    G --"1.Recupera o estado da conversa"--> H[("MemorySaver")];
+    G --"2.Gera Embedding da Pergunta"--> D("OpenAI API - Embeddings");
+    G --"3.Busca Documentos (Query)"--> E("Pinecone - Índice Vetorial");
     E --"Contexto Relevante"--> G;
-    G --"4. Gera Resposta (Pergunta + Contexto + Histórico)"--> F("OpenAI API - GPT-4o");
+    G --"4.Gera Resposta (Pergunta + Contexto + Histórico)"--> F("OpenAI API - GPT-4o");
     F --"Resposta Gerada"--> G;
-    G --"5. Atualiza o estado da conversa"--> H;
+    G --"5.Atualiza o estado da conversa"--> H;
     G --"Resposta Final"--> C;
     C --"Resposta do Agente (HTTP 200 OK)"--> B;
     B --> A;
