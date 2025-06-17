@@ -2,3 +2,4 @@
 .env
 .ide/
 __pycache__/
+core/__pycache__
