@@ -2,6 +2,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatBox = document.getElementById('chat-box');
     const userInput = document.getElementById('user-input');
     const sendButton = document.getElementById('send-button');
+    
+    const sessionId = `session-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+    console.log('Session ID:', sessionId);
 
     function addMessage(text, sender) {
         const messageDiv = document.createElement('div');
@@ -27,7 +30,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ query: query }),
+                body: JSON.stringify({ 
+                    query: query, 
+                    session_id: sessionId
+                }),
             });
 
             if (!response.ok) {
@@ -43,10 +49,58 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    async function clearHistory() {
+        try {
+            const response = await fetch(`http://localhost:8000/chat/history/${sessionId}`, {
+                method: 'DELETE'
+            });
+            
+            if (response.ok) {
+                chatBox.innerHTML = '';
+                console.log('Histórico limpo com sucesso');
+            }
+        } catch (error) {
+            console.error('Erro ao limpar histórico:', error);
+        }
+    }
+
+    async function loadHistory() {
+        try {
+            const response = await fetch(`http://localhost:8000/chat/history/${sessionId}`);
+            
+            if (response.ok) {
+                const data = await response.json();
+                
+                chatBox.innerHTML = '';
+                
+                for (const msg of data.messages) {
+                    const sender = msg.type === 'human' ? 'user' : 'system';
+                    addMessage(msg.content, sender);
+                }
+            }
+        } catch (error) {
+            console.error('Erro ao carregar histórico:', error);
+        }
+    }
+
     sendButton.addEventListener('click', sendMessage);
     userInput.addEventListener('keypress', (event) => {
         if (event.key === 'Enter') {
             sendMessage();
         }
     });
+
+    const debugDiv = document.createElement('div');
+    debugDiv.innerHTML = `
+        <button onclick="clearHistory()" style="margin: 5px; padding: 5px 10px; background: #ff4444; color: white; border: none; border-radius: 3px;">
+            Limpar Histórico
+        </button>
+        <button onclick="loadHistory()" style="margin: 5px; padding: 5px 10px; background: #4444ff; color: white; border: none; border-radius: 3px;">
+            Carregar Histórico
+        </button>
+        <small style="display: block; margin: 5px; color: #666;">Session ID: ${sessionId}</small>
+    `;
+
+    window.clearHistory = clearHistory;
+    window.loadHistory = loadHistory;
 });
