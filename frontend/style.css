@@ -4,12 +4,12 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: #f0f2f5;
+    background-color: #1B1C1D;
     margin: 0;
 }
 
 .chat-container {
-    background-color: #fff;
+    background-color: #282A2C;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     width: 90%;
@@ -45,15 +45,15 @@ h1 {
 }
 
 .user-message {
-    background-color: #e0f7fa;
-    color: #333;
+    background-color: #333537;
+    color: white;
     align-self: flex-end; 
     margin-left: auto;
 }
 
 .system-message {
-    background-color: #f1f0f0;
-    color: #333;
+    background-color: #282A2C;
+    color: white;
     align-self: flex-start; 
     margin-right: auto;
 }
@@ -61,21 +61,23 @@ h1 {
 .input-container {
     display: flex;
     padding: 15px;
-    border-top: 1px solid #eee;
-    background-color: #f9f9f9;
+    border-top: 1px solid #6B6B6B;
+    background-color: #282A2C;
 }
 
 #user-input {
     flex-grow: 1;
     padding: 10px 15px;
-    border: 1px solid #ddd;
+    border: 1px solid #6B6B6B;
     border-radius: 20px;
+    background-color: #282A2C;
+    color: white;
     outline: none;
     font-size: 1em;
 }
 
 #send-button {
-    background-color: #28a745;
+    background-color: #282A2C;
     color: white;
     border: none;
     border-radius: 20px;
@@ -87,5 +89,5 @@ h1 {
 }
 
 #send-button:hover {
-    background-color: #218838;
+    background-color: #1B1C1D;
 }
