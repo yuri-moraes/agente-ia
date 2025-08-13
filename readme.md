@@ -4,6 +4,9 @@ Um agente de IA para atendimento em uma interface web com base em documentos PDF
 
 O objetivo deste projeto é aprender a usar um agente de IA para atender usuários com base em conhecimentos específicos, utilizando uma arquitetura modular e escalável que facilita a manutenção e a adição de novas funcionalidades.
 
+### Vídeo introdutório:
+https://youtu.be/bnNKLGxsIto
+
 ### Principais Novidades da Versão Modular
 
 - **Arquitetura Refatorada:** O código foi reestruturado em módulos (API, Serviços, Configurações), seguindo as melhores práticas de desenvolvimento com FastAPI.
